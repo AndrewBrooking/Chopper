@@ -5,7 +5,7 @@ issueTrackerURL="https://github.com/AndrewBrooking/Chopper/issues"
 
 [[mods]]
 	modId="chopper"
-	version="1.0.0"
+	version="1.0.1"
 	displayName="Chopper"
 	displayURL="https://github.com/AndrewBrooking/Chopper"
 	credits="Thanks to Mojang, the Forge team, and progwml6 for his IronChests mod as a reference"
