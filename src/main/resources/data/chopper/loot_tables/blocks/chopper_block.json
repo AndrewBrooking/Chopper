@@ -2,6 +2,7 @@
 	"type": "minecraft:block",
 	"pools": [
 		{
+			"name": "chopper:chopper_block",
 			"rolls": 1,
 			"entries": [
 				{

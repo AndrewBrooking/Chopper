@@ -78,8 +78,8 @@ public class ChopperTileEntityRenderer<T extends TileEntity & IChestLid> extends
 		this.bottom.addBox(1.0F, 0.0F, 1.0F, 14.0F, 10.0F, 14.0F, 0.0F);
 
 		this.latch = new ModelRenderer(TEX_SIZE[0], TEX_SIZE[1], LATCH_UV[0], LATCH_UV[1]);
-		this.latch.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
-		this.latch.setRotationPoint(0.0F, 8.0F, 0.0F);
+		this.latch.addBox(7.0F, -2.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
+		this.latch.setRotationPoint(0.0F, 9.0F, 0.0F);
 	}
 
 	@Override
