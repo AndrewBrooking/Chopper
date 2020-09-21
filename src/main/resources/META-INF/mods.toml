@@ -5,9 +5,9 @@ issueTrackerURL="https://github.com/AndrewBrooking/Chopper/issues"
 
 [[mods]]
 	modId="chopper"
-	version="1.0.2"
+	version="${version}"
 	displayName="Chopper"
-	displayURL="https://github.com/AndrewBrooking/Chopper"
+	displayURL="https://www.curseforge.com/minecraft/mc-mods/chopper"
 	credits="Thanks to Mojang, the Forge team, and progwml6 for his IronChests mod as a reference"
 	authors="cer0tech"
 	description='''
@@ -16,6 +16,6 @@ Chest + Hopper = Chopper
 	[[dependencies.chopper]]
 	    modId="forge"
 	    mandatory=true
-	    versionRange="[33,)"
+	    versionRange="[${forge_version},)"
 	    ordering="NONE"
 	    side="BOTH"

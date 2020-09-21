@@ -23,30 +23,30 @@ public class ChopperScreen extends ContainerScreen<ChopperContainer> implements 
 	public ChopperScreen(ChopperContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
 		super(screenContainer, inv, titleIn);
 
-		this.field_230711_n_ = false;
+		this.passEvents = false;
 		int yOff = 114;
-		this.ySize = yOff + this.inventoryRows * 18;
-		this.field_238745_s_ = this.ySize - 94;
+		this.ySize = yOff + ChopperScreen.inventoryRows * 18;
+		this.playerInventoryTitleY = this.ySize - 94;
 	}
 
 	@Override
-	protected void func_230450_a_(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+	protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX,
+			int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-		this.field_230706_i_.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
+		this.minecraft.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
 
-		int i = (this.field_230708_k_ - this.xSize) / 2;
-		int j = (this.field_230709_l_ - this.ySize) / 2;
+		int i = (this.width - this.xSize) / 2;
+		int j = (this.height - this.ySize) / 2;
 
-		this.func_238474_b_(matrixStack, i, j, 0, 0, this.xSize, this.inventoryRows * 18 + 17);
-		this.func_238474_b_(matrixStack, i, j + this.inventoryRows * 18 + 17, 0, 126, this.xSize, 96);
+		this.blit(matrixStack, i, j, 0, 0, this.xSize, ChopperScreen.inventoryRows * 18 + 17);
+		this.blit(matrixStack, i, j + ChopperScreen.inventoryRows * 18 + 17, 0, 126, this.xSize, 96);
 	}
 
 	@Override
-	public void func_230430_a_(MatrixStack p_230430_1_, int p_230430_2_, int p_230430_3_, float p_230430_4_) {
-		this.func_230446_a_(p_230430_1_);
-		super.func_230430_a_(p_230430_1_, p_230430_2_, p_230430_3_, p_230430_4_);
-		this.func_230459_a_(p_230430_1_, p_230430_2_, p_230430_3_);
+	public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+		this.renderBackground(matrixStack);
+		super.render(matrixStack, mouseX, mouseY, partialTicks);
+		this.func_230459_a_(matrixStack, mouseX, mouseY);
 	}
-
 }

@@ -15,7 +15,6 @@ import com.cerotech.chopper.inventory.ChopperItemHandler;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ChestBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -455,13 +454,13 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 		return 0;
 	}
 
-	public static int calculatePlayersUsingSync(World worldIn, LockableTileEntity te, int n1, int n2, int n3, int n4,
-			int n5) {
-		if (!worldIn.isRemote && n5 != 0 && (n1 + n2 + n3 + n4) % 200 == 0) {
-			n5 = calculatePlayersUsing(worldIn, te, n2, n3, n4);
+	public static int calculatePlayersUsingSync(World worldIn, LockableTileEntity te, int lastSync, int posX, int posY,
+			int posZ, int playerCount) {
+		if (!worldIn.isRemote && playerCount != 0) {
+			playerCount = calculatePlayersUsing(worldIn, te, posX, posY, posZ);
 		}
 
-		return n5;
+		return playerCount;
 	}
 
 	public static int calculatePlayersUsing(World worldIn, LockableTileEntity te, int n1, int n2, int n3) {
@@ -538,8 +537,8 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 	}
 
 	@Override
-	public void func_230337_a_(BlockState stateIn, CompoundNBT compound) {
-		super.func_230337_a_(stateIn, compound);
+	public void read(BlockState stateIn, CompoundNBT compound) {
+		super.read(stateIn, compound);
 
 		this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
 

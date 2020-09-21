@@ -72,6 +72,6 @@ public class ChopperRegistry {
 	 */
 	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> renderChopperItemStack() {
-		return () -> new ChopperItemStackRenderer(ChopperTileEntity::new);
+		return () -> new ChopperItemStackRenderer<ChopperTileEntity>(ChopperTileEntity::new);
 	}
 }

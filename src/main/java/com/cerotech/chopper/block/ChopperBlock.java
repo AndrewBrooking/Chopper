@@ -174,7 +174,7 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
 		}
 
-		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		return stateIn;
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 
 	@Override
 	public FluidState getFluidState(BlockState state) {
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : Fluids.EMPTY.getDefaultState();
 	}
 
 	/**
