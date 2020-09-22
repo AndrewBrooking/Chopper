@@ -9,16 +9,8 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'maven'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-
-repositories {
-    maven {
-        name 'DVS1 Maven FS'
-        url 'http://dvs1.progwml6.com/files/maven'
-    }
-}
 
 group = 'com.cerotech.chopper'
 
@@ -76,11 +68,6 @@ minecraft {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:' + mc_version + '-' + forge_version
-    
-    // compile against the JEI API but do not include it at runtime
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api")
-    // at runtime, use the full JEI jar
-    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}")
 }
 
 sourceSets {

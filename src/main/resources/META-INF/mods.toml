@@ -9,6 +9,7 @@ issueTrackerURL="https://github.com/AndrewBrooking/Chopper/issues"
 	displayName="Chopper"
 	displayURL="https://www.curseforge.com/minecraft/mc-mods/chopper"
 	credits="Thanks to Mojang, the Forge team, and progwml6 for his IronChests mod as a reference"
+	logoFile="chopper_icon.png"
 	authors="cer0tech"
 	description='''
 Chest + Hopper = Chopper
