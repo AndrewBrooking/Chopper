@@ -112,7 +112,7 @@ public class ChopperTileEntityRenderer<T extends TileEntity & IChestLid> extends
 			int light = callbackWrapper.<Int2IntFunction>apply(new DualBrightnessCallback<>())
 					.applyAsInt(combinedLightIn);
 
-			RenderMaterial materialGeneral = new RenderMaterial(Atlases.CHEST_ATLAS, CHOPPER_TEXTURE);
+			RenderMaterial materialGeneral = Atlases.CHEST_MATERIAL;
 			RenderMaterial materialLid = new RenderMaterial(Atlases.CHEST_ATLAS, LID_TEXTURE);
 
 			IVertexBuilder vBuilderGeneral = materialGeneral.getBuffer(bufferIn, RenderType::getEntityCutout);

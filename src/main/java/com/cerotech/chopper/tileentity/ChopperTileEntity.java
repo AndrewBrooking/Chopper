@@ -162,7 +162,7 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 	}
 
 	@Override
-	protected void setItems(NonNullList<ItemStack> itemsIn) {
+	public void setItems(NonNullList<ItemStack> itemsIn) {
 		this.inventory = itemsIn;
 	}
 
@@ -456,20 +456,20 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 
 	public static int calculatePlayersUsingSync(World worldIn, LockableTileEntity te, int lastSync, int posX, int posY,
 			int posZ, int playerCount) {
-		if (!worldIn.isRemote && playerCount != 0) {
+		if (!worldIn.isRemote && playerCount != 0 && (lastSync + posX + posY + posZ) % 200 == 0) {
 			playerCount = calculatePlayersUsing(worldIn, te, posX, posY, posZ);
 		}
 
 		return playerCount;
 	}
 
-	public static int calculatePlayersUsing(World worldIn, LockableTileEntity te, int n1, int n2, int n3) {
+	public static int calculatePlayersUsing(World worldIn, LockableTileEntity te, int posX, int posY, int posZ) {
 		int i = 0;
 
 		for (PlayerEntity playerentity : worldIn.getEntitiesWithinAABB(PlayerEntity.class,
-				new AxisAlignedBB((double) ((float) n1 - 5.0F), (double) ((float) n2 - 5.0F),
-						(double) ((float) n3 - 5.0F), (double) ((float) (n1 + 1) + 5.0F),
-						(double) ((float) (n2 + 1) + 5.0F), (double) ((float) (n3 + 1) + 5.0F)))) {
+				new AxisAlignedBB((double) ((float) posX - 5.0F), (double) ((float) posY - 5.0F),
+						(double) ((float) posZ - 5.0F), (double) ((float) (posX + 1) + 5.0F),
+						(double) ((float) (posY + 1) + 5.0F), (double) ((float) (posZ + 1) + 5.0F)))) {
 			if (playerentity.openContainer instanceof ChestContainer) {
 				IInventory iinventory = ((ChestContainer) playerentity.openContainer).getLowerChestInventory();
 				if (iinventory == te || iinventory instanceof DoubleSidedInventory

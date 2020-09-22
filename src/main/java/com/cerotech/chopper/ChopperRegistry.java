@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import com.cerotech.chopper.block.ChopperBlock;
 import com.cerotech.chopper.client.tileentity.ChopperItemStackRenderer;
 import com.cerotech.chopper.inventory.ChopperContainer;
+import com.cerotech.chopper.item.ChopperConverterItem;
 import com.cerotech.chopper.tileentity.ChopperTileEntity;
 import com.google.common.collect.Sets;
 
@@ -17,6 +18,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,6 +27,17 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ChopperRegistry {
+
+	/**
+	 * ITEM GROUP
+	 */
+	public static final ItemGroup CHOPPER_ITEM_GROUP = (new ItemGroup("chopper") {
+		@Override
+		@OnlyIn(Dist.CLIENT)
+		public ItemStack createIcon() {
+			return new ItemStack(CHOPPER_BLOCK.get());
+		}
+	});
 
 	/**
 	 * REGISTRIES
@@ -52,7 +65,10 @@ public class ChopperRegistry {
 	 */
 	public static final RegistryObject<BlockItem> CHOPPER_ITEM = ITEMS.register("chopper_block",
 			() -> new BlockItem(CHOPPER_BLOCK.get(),
-					new Item.Properties().group(ItemGroup.REDSTONE).setISTER(() -> renderChopperItemStack())));
+					new Item.Properties().group(CHOPPER_ITEM_GROUP).setISTER(() -> renderChopperItemStack())));
+
+	public static final RegistryObject<ChopperConverterItem> CHOPPER_UPGRADE = ITEMS.register("chopper_converter",
+			() -> new ChopperConverterItem(new Item.Properties().group(CHOPPER_ITEM_GROUP).maxStackSize(64)));
 
 	/**
 	 * TILE ENTITIES
