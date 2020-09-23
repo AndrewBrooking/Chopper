@@ -12,7 +12,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-group = 'com.cerotech.chopper'
+version = mod_version
+group = 'com.${mod_author}.chopper'
+archivesBaseName = mod_id
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
@@ -55,7 +57,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'chopper', '--all', '--output', file('src/generated/resources/')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/')
 
             mods {
                 chopper {
@@ -74,7 +76,8 @@ sourceSets {
     main {
         resources {
             srcDirs = [
-                    "$rootDir/src/main/resources"
+                    "$rootDir/src/main/resources",
+                    "$rootDir/src/generated/resources"
             ]
         }
     }
@@ -106,12 +109,12 @@ artifacts {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "chopper",
-            "Specification-Vendor": "cer0tech",
+            "Specification-Title": mod_id,
+            "Specification-Vendor": mod_author,
             "Specification-Version": "1",
             "Implementation-Title": project.name,
             "Implementation-Version": "${mod_version}",
-            "Implementation-Vendor" :"cer0tech",
+            "Implementation-Vendor": mod_id,
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
@@ -127,8 +130,8 @@ publishing {
         }
     }
     repositories {
-        if (project.hasProperty('DEPLOY_DIR')) {
-            maven { url DEPLOY_DIR }
-        }
-    }
+		maven {
+			url "file:///${project.projectDir}/mcmodsrepo"
+		}
+	}
 }

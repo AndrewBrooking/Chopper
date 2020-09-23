@@ -31,13 +31,32 @@ public class ChopperRegistry {
 	/**
 	 * ITEM GROUP
 	 */
-	public static final ItemGroup CHOPPER_ITEM_GROUP = (new ItemGroup("chopper") {
+	public static final ItemGroup CHOPPER_ITEM_GROUP = (new ItemGroup(Chopper.MOD_ID) {
 		@Override
 		@OnlyIn(Dist.CLIENT)
 		public ItemStack createIcon() {
 			return new ItemStack(CHOPPER_BLOCK.get());
 		}
 	});
+
+	/**
+	 * REGISTRY NAMES
+	 */
+	public static final String CHOPPER_BLOCK_NAME = "chopper_block";
+	public static final String CONVERTER_ITEM_NAME = "chopper_converter";
+	public static final String CONTAINER_NAME = "chopper_container";
+
+	/**
+	 * BLOCK/ITEM PROPERTIES
+	 */
+	public static final AbstractBlock.Properties CHOPPER_BLOCK_PROPS = AbstractBlock.Properties.create(Material.WOOD)
+			.hardnessAndResistance(2.5F).sound(SoundType.WOOD);
+
+	public static final Item.Properties CHOPPER_ITEM_PROPS = new Item.Properties().group(CHOPPER_ITEM_GROUP)
+			.setISTER(() -> renderChopperItemStack());
+
+	public static final Item.Properties CONVERTER_ITEM_PROPS = new Item.Properties().group(CHOPPER_ITEM_GROUP)
+			.maxStackSize(16);
 
 	/**
 	 * REGISTRIES
@@ -56,32 +75,30 @@ public class ChopperRegistry {
 	/**
 	 * BLOCKS
 	 */
-	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK = BLOCKS.register("chopper_block",
-			() -> new ChopperBlock(
-					AbstractBlock.Properties.create(Material.WOOD).hardnessAndResistance(2.5F).sound(SoundType.WOOD)));
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK = BLOCKS.register(CHOPPER_BLOCK_NAME,
+			() -> new ChopperBlock(CHOPPER_BLOCK_PROPS));
 
 	/**
 	 * ITEMS
 	 */
-	public static final RegistryObject<BlockItem> CHOPPER_ITEM = ITEMS.register("chopper_block",
-			() -> new BlockItem(CHOPPER_BLOCK.get(),
-					new Item.Properties().group(CHOPPER_ITEM_GROUP).setISTER(() -> renderChopperItemStack())));
+	public static final RegistryObject<BlockItem> CHOPPER_ITEM = ITEMS.register(CHOPPER_BLOCK_NAME,
+			() -> new BlockItem(CHOPPER_BLOCK.get(), CHOPPER_ITEM_PROPS));
 
-	public static final RegistryObject<ChopperConverterItem> CHOPPER_UPGRADE = ITEMS.register("chopper_converter",
-			() -> new ChopperConverterItem(new Item.Properties().group(CHOPPER_ITEM_GROUP).maxStackSize(64)));
+	public static final RegistryObject<ChopperConverterItem> CHOPPER_CONVERTER = ITEMS.register(CONVERTER_ITEM_NAME,
+			() -> new ChopperConverterItem(CONVERTER_ITEM_PROPS));
 
 	/**
 	 * TILE ENTITIES
 	 */
 	public static final RegistryObject<TileEntityType<ChopperTileEntity>> CHOPPER_TE = TILE_ENTITIES.register(
-			"chopper_te",
+			CHOPPER_BLOCK_NAME + "_te",
 			() -> new TileEntityType<>(ChopperTileEntity::new, Sets.newHashSet(CHOPPER_BLOCK.get()), null));
 
 	/**
 	 * CONTAINERS
 	 */
 	public static final RegistryObject<ContainerType<ChopperContainer>> CHOPPER_CONTAINER = CONTAINERS
-			.register("chopper_container", () -> new ContainerType<>(ChopperContainer::createChopperContainer));
+			.register(CONTAINER_NAME, () -> new ContainerType<>(ChopperContainer::createChopperContainer));
 
 	/**
 	 * ITEMSTACK RENDER FUNCTION
