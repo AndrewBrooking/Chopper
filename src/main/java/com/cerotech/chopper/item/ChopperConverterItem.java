@@ -47,7 +47,9 @@ public class ChopperConverterItem extends Item {
 
 		if (!(block instanceof ChestBlock))
 			return ActionResultType.PASS;
-
+		
+		// TODO: IRON CHESTS UPGRADING
+		
 		if (te instanceof ChestTileEntity) {
 
 			if (ChestTileEntity.getPlayersUsing(world, blockPos) > 0) {
@@ -75,7 +77,7 @@ public class ChopperConverterItem extends Item {
 			world.removeTileEntity(blockPos);
 			world.removeBlock(blockPos, false);
 
-			BlockState newState = ChopperRegistry.CHOPPER_BLOCK.get().getDefaultState().with(ChopperBlock.FACING,
+			BlockState newState = ChopperRegistry.CHOPPER_BLOCK_NORMAL.get().getDefaultState().with(ChopperBlock.FACING,
 					facing);
 
 			world.setBlockState(blockPos, newState, 3);
@@ -101,5 +103,4 @@ public class ChopperConverterItem extends Item {
 
 		return ActionResultType.PASS;
 	}
-
 }

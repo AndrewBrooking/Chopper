@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import com.cerotech.chopper.Chopper;
 import com.cerotech.chopper.ChopperRegistry;
 import com.cerotech.chopper.block.ChopperBlock;
+import com.cerotech.chopper.block.ChopperVariant;
 import com.cerotech.chopper.inventory.ChopperContainer;
 import com.cerotech.chopper.inventory.ChopperItemHandler;
 
@@ -49,8 +50,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -63,6 +62,7 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 	 * START VARIABLES
 	 */
 
+	private ChopperVariant variant;
 	private NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	private int transferCooldown = -1;
 	private long tickedGameTime;
@@ -82,8 +82,13 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 		super(typeIn);
 	}
 
-	public ChopperTileEntity() {
+	public ChopperTileEntity(ChopperVariant variant) {
 		this(ChopperRegistry.CHOPPER_TE.get());
+		this.variant = variant;
+	}
+	
+	public ChopperTileEntity() {
+		this(ChopperVariant.NORMAL);
 	}
 
 	/**
@@ -194,7 +199,7 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 	private boolean transferItemsOut() {
 		IInventory iinventory = this.getDestinationInventory();
 
-		if (iinventory == null) {
+		if (iinventory == null || iinventory instanceof IHopper) {
 			return false;
 		} else {
 			if (this.isInventoryFull(iinventory)) {
@@ -577,7 +582,6 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 	 */
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public float getLidAngle(float partialTicks) {
 		float lidAngle = MathHelper.lerp(partialTicks, this.prevLidAngle, this.lidAngle);
 		return lidAngle;
@@ -585,12 +589,12 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 
 	@Override
 	protected ITextComponent getDefaultName() {
-		return new TranslationTextComponent(Chopper.MOD_ID + ".container.chopper");
+		return new TranslationTextComponent(Chopper.MOD_ID + ".container.chopper_" + variant.getName());
 	}
 
 	@Override
 	protected Container createMenu(int id, PlayerInventory playerInventory) {
-		return ChopperContainer.createChopperContainer(id, playerInventory, this);
+		return ChopperContainer.createChopperContainer(id, this, playerInventory, this.variant);
 	}
 
 	/**

@@ -3,7 +3,9 @@ package com.cerotech.chopper;
 import java.util.concurrent.Callable;
 
 import com.cerotech.chopper.block.ChopperBlock;
+import com.cerotech.chopper.block.ChopperVariant;
 import com.cerotech.chopper.client.tileentity.ChopperItemStackRenderer;
+import com.cerotech.chopper.config.ChopperConfig;
 import com.cerotech.chopper.inventory.ChopperContainer;
 import com.cerotech.chopper.item.ChopperConverterItem;
 import com.cerotech.chopper.tileentity.ChopperTileEntity;
@@ -20,8 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -33,9 +34,8 @@ public class ChopperRegistry {
 	 */
 	public static final ItemGroup CHOPPER_ITEM_GROUP = (new ItemGroup(Chopper.MOD_ID) {
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public ItemStack createIcon() {
-			return new ItemStack(CHOPPER_BLOCK.get());
+			return new ItemStack(CHOPPER_BLOCK_NORMAL.get());
 		}
 	});
 
@@ -75,15 +75,25 @@ public class ChopperRegistry {
 	/**
 	 * BLOCKS
 	 */
-	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK = BLOCKS.register(CHOPPER_BLOCK_NAME,
-			() -> new ChopperBlock(CHOPPER_BLOCK_PROPS));
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK_NORMAL = register(ChopperVariant.NORMAL);
+
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK_IRON = register(ChopperVariant.IRON);
+
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK_GOLD = register(ChopperVariant.GOLD);
+
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK_DIAMOND = register(ChopperVariant.DIAMOND);
+
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK_COPPER = register(ChopperVariant.COPPER);
+
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK_SILVER = register(ChopperVariant.SILVER);
+
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK_CRYSTAL = register(ChopperVariant.CRYSTAL);
+
+	public static final RegistryObject<ChopperBlock> CHOPPER_BLOCK_OBSIDIAN = register(ChopperVariant.OBSIDIAN);
 
 	/**
 	 * ITEMS
 	 */
-	public static final RegistryObject<BlockItem> CHOPPER_ITEM = ITEMS.register(CHOPPER_BLOCK_NAME,
-			() -> new BlockItem(CHOPPER_BLOCK.get(), CHOPPER_ITEM_PROPS));
-
 	public static final RegistryObject<ChopperConverterItem> CHOPPER_CONVERTER = ITEMS.register(CONVERTER_ITEM_NAME,
 			() -> new ChopperConverterItem(CONVERTER_ITEM_PROPS));
 
@@ -92,7 +102,11 @@ public class ChopperRegistry {
 	 */
 	public static final RegistryObject<TileEntityType<ChopperTileEntity>> CHOPPER_TE = TILE_ENTITIES.register(
 			CHOPPER_BLOCK_NAME + "_te",
-			() -> new TileEntityType<>(ChopperTileEntity::new, Sets.newHashSet(CHOPPER_BLOCK.get()), null));
+			() -> new TileEntityType<ChopperTileEntity>(ChopperTileEntity::new,
+					Sets.newHashSet(CHOPPER_BLOCK_NORMAL.get(), CHOPPER_BLOCK_IRON.get(), CHOPPER_BLOCK_GOLD.get(),
+							CHOPPER_BLOCK_DIAMOND.get(), CHOPPER_BLOCK_COPPER.get(), CHOPPER_BLOCK_SILVER.get(),
+							CHOPPER_BLOCK_CRYSTAL.get(), CHOPPER_BLOCK_OBSIDIAN.get()),
+					null));
 
 	/**
 	 * CONTAINERS
@@ -103,8 +117,25 @@ public class ChopperRegistry {
 	/**
 	 * ITEMSTACK RENDER FUNCTION
 	 */
-	@OnlyIn(Dist.CLIENT)
 	private static Callable<ItemStackTileEntityRenderer> renderChopperItemStack() {
 		return () -> new ChopperItemStackRenderer<ChopperTileEntity>(ChopperTileEntity::new);
+	}
+
+	private static boolean shouldRegisterIronChests() {
+		return ChopperConfig.COMMON.enableIronChestsIntegration.get() && ModList.get().isLoaded("ironchest");
+	}
+
+	private static RegistryObject<ChopperBlock> register(ChopperVariant variant) {
+		if (variant.getModID() == "ironchest" && !shouldRegisterIronChests()) {
+			return null;
+		}
+
+		RegistryObject<ChopperBlock> block = BLOCKS.register(CHOPPER_BLOCK_NAME + "_" + variant.getName(),
+				() -> new ChopperBlock(variant, CHOPPER_BLOCK_PROPS));
+
+		ITEMS.register(CHOPPER_BLOCK_NAME + "_" + variant.getName(),
+				() -> new BlockItem(block.get(), CHOPPER_ITEM_PROPS));
+
+		return block;
 	}
 }

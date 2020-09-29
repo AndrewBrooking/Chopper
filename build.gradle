@@ -68,8 +68,17 @@ minecraft {
     }
 }
 
+repositories {
+	maven {
+		name = "Progwml6 maven"
+		url = "https://dvs1.progwml6.com/files/maven/"
+	}
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:' + mc_version + '-' + forge_version
+    
+    compileOnly fg.deobf("com.progwml6.ironchest:ironchest:1.16.2-11.1.5")
 }
 
 sourceSets {

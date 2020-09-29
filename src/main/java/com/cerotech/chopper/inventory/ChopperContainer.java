@@ -1,6 +1,7 @@
 package com.cerotech.chopper.inventory;
 
 import com.cerotech.chopper.ChopperRegistry;
+import com.cerotech.chopper.block.ChopperVariant;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,29 +14,38 @@ import net.minecraft.item.ItemStack;
 
 public class ChopperContainer extends Container {
 
-	private static final int ROWS = 3;
-	private static final int COLS = 9;
-	private static final int TOTAL_SLOTS = ROWS * COLS;
+	private final ChopperVariant variant;
+
+	private static final int DEFAULT_SIZE = 27;
 	private static final int CELL_SIZE = 18;
-	private static final int LEFT_PADDING = 8;
-	private static final int PLAYER_INV_START = 103;
-	private static final int HOTBAR_START = 161;
+	private static final int PLAYER_ROWS = 3;
+	private static final int PLAYER_COLS = 9;
+	private static final int HOTBAR_OFFSET = 24;
+	private static final int HOTBAR_Y_PADDING = 4;
 
 	public static ChopperContainer createChopperContainer(int id, PlayerInventory playerInventory) {
-		return new ChopperContainer(ChopperRegistry.CHOPPER_CONTAINER.get(), id, new Inventory(TOTAL_SLOTS),
-				playerInventory);
+		return new ChopperContainer(ChopperRegistry.CHOPPER_CONTAINER.get(), id, new Inventory(DEFAULT_SIZE),
+				playerInventory, ChopperVariant.NORMAL);
 	}
 
-	public static ChopperContainer createChopperContainer(int id, PlayerInventory playerInventory,
-			IInventory inventory) {
-		return new ChopperContainer(ChopperRegistry.CHOPPER_CONTAINER.get(), id, inventory, playerInventory);
+	public static ChopperContainer createChopperContainer(int id, IInventory inventory,
+			PlayerInventory playerInventory) {
+		return new ChopperContainer(ChopperRegistry.CHOPPER_CONTAINER.get(), id, inventory, playerInventory,
+				ChopperVariant.NORMAL);
+	}
+
+	public static ChopperContainer createChopperContainer(int id, IInventory inventory, PlayerInventory playerInventory,
+			ChopperVariant variant) {
+		return new ChopperContainer(ChopperRegistry.CHOPPER_CONTAINER.get(), id, inventory, playerInventory, variant);
 	}
 
 	private final IInventory inventory;
 
-	protected ChopperContainer(ContainerType<?> type, int id, IInventory inventory, PlayerInventory playerInventory) {
+	protected ChopperContainer(ContainerType<?> type, int id, IInventory inventory, PlayerInventory playerInventory,
+			ChopperVariant variant) {
 		super(type, id);
 		this.inventory = inventory;
+		this.variant = variant;
 
 		inventory.openInventory(playerInventory.player);
 
@@ -63,14 +73,15 @@ public class ChopperContainer extends Container {
 		Slot slot = this.inventorySlots.get(index);
 
 		if (slot != null && slot.getHasStack()) {
+			int totalSlots = this.variant.getRows() * this.variant.getCols();
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
 
-			if (index < TOTAL_SLOTS) {
-				if (!this.mergeItemStack(itemstack1, TOTAL_SLOTS, this.inventorySlots.size(), true)) {
+			if (index < totalSlots) {
+				if (!this.mergeItemStack(itemstack1, totalSlots, this.inventorySlots.size(), true)) {
 					return ItemStack.EMPTY;
 				}
-			} else if (!this.mergeItemStack(itemstack1, 0, TOTAL_SLOTS, false)) {
+			} else if (!this.mergeItemStack(itemstack1, 0, totalSlots, false)) {
 				return ItemStack.EMPTY;
 			}
 
@@ -85,26 +96,34 @@ public class ChopperContainer extends Container {
 	}
 
 	private void createInventorySlots() {
-		for (int row = 0; row < ROWS; ++row) {
-			for (int col = 0; col < COLS; ++col) {
-				this.addSlot(new Slot(this.inventory, col + row * COLS, LEFT_PADDING + col * CELL_SIZE,
+		int rows = this.variant.getRows();
+		int cols = this.variant.getCols();
+
+		for (int row = 0; row < rows; ++row) {
+			for (int col = 0; col < cols; ++col) {
+				this.addSlot(new Slot(this.inventory, col + row * cols, this.variant.getXPadding() + col * CELL_SIZE,
 						CELL_SIZE + row * CELL_SIZE));
 			}
 		}
 	}
 
 	private void createPlayerInventorySlots(PlayerInventory playerInventory) {
-		int i = (ROWS - 4) * 18;
+		int xPadding = (this.variant.getXSize() - (CELL_SIZE * PLAYER_COLS)) / 2 + 1;
 
-		for (int row = 0; row < 3; ++row) {
-			for (int col = 0; col < 9; ++col) {
-				this.addSlot(new Slot(playerInventory, col + row * 9 + 9, LEFT_PADDING + col * CELL_SIZE,
-						PLAYER_INV_START + row * CELL_SIZE + i));
+		for (int row = 0; row < PLAYER_ROWS; ++row) {
+			for (int col = 0; col < PLAYER_COLS; ++col) {
+				this.addSlot(new Slot(playerInventory, col + row * 9 + 9, xPadding + col * CELL_SIZE,
+						this.variant.getYSize() - (HOTBAR_OFFSET + HOTBAR_Y_PADDING) - (row * CELL_SIZE)));
 			}
 		}
 
 		for (int h = 0; h < 9; ++h) {
-			this.addSlot(new Slot(playerInventory, h, LEFT_PADDING + h * CELL_SIZE, HOTBAR_START + i));
+			this.addSlot(
+					new Slot(playerInventory, h, xPadding + h * CELL_SIZE, this.variant.getYSize() - HOTBAR_OFFSET));
 		}
+	}
+
+	public ChopperVariant getVariant() {
+		return this.variant;
 	}
 }

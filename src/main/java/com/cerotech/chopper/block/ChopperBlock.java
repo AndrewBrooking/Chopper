@@ -53,7 +53,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 
 	/**
-	 * BEGIN VARIABLES
+	 * BEGIN BLOCK PROPERTIES
 	 */
 
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
@@ -61,6 +61,12 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	public static final BooleanProperty ENABLED = BlockStateProperties.ENABLED;
+
+	/**
+	 * END BLOCK PROPERTIES
+	 * 
+	 * START CONSTANTS
+	 */
 
 	protected static final VoxelShape CHEST_SHAPE = Block.makeCuboidShape(1.0D, 0.0D, 1.0D, 15.0D, 15.0D, 15.0D);
 
@@ -79,14 +85,18 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 		}
 	};
 
+	private final ChopperVariant variant;
+
 	/**
-	 * END VARIABLES
+	 * END CONSTANTS
 	 * 
 	 * BEGIN CONSTRUCTOR
 	 */
 
-	public ChopperBlock(Properties properties) {
+	public ChopperBlock(ChopperVariant variant, Properties properties) {
 		super(properties);
+
+		this.variant = variant;
 
 		this.setDefaultState(this.stateContainer.getBaseState().with(FACING, Direction.NORTH)
 				.with(WATERLOGGED, Boolean.valueOf(false)).with(ENABLED, Boolean.valueOf(true)));
@@ -142,7 +152,7 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
-		return new ChopperTileEntity();
+		return new ChopperTileEntity(this.getVariant());
 	}
 
 	@Override
@@ -305,6 +315,10 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 	public static Direction getDirectionToAttached(BlockState state) {
 		Direction direction = state.get(FACING);
 		return direction.rotateYCCW();
+	}
+
+	public ChopperVariant getVariant() {
+		return variant;
 	}
 
 	/**

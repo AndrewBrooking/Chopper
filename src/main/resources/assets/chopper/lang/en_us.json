@@ -1,6 +1,16 @@
 {
-	"block.chopper.chopper_block": "Chopper",
+	"block.chopper.chopper_block_normal": "Chopper",
+	"block.chopper.chopper_block_iron": "Iron Chopper",
+	"block.chopper.chopper_block_gold": "Gold Chopper",
+	"block.chopper.chopper_block_diamond": "Diamond Chopper",
+	"block.chopper.chopper_block_copper": "Copper Chopper",
+	"block.chopper.chopper_block_silver": "Silver Chopper",
+	"block.chopper.chopper_block_crystal": "Crystal Chopper",
+	"block.chopper.chopper_block_obsidian": "Obsidian Chopper",
+	
 	"chopper.container.chopper": "Chopper",
+	
 	"item.chopper.chopper_converter": "Chopper Converter",
+	
 	"itemGroup.chopper": "Chopper"
 }

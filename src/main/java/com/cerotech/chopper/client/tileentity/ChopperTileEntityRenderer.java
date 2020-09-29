@@ -1,6 +1,5 @@
 package com.cerotech.chopper.client.tileentity;
 
-import com.cerotech.chopper.Chopper;
 import com.cerotech.chopper.ChopperRegistry;
 import com.cerotech.chopper.block.ChopperBlock;
 import com.cerotech.chopper.tileentity.ChopperTileEntity;
@@ -23,15 +22,11 @@ import net.minecraft.tileentity.IChestLid;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMerger;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 public class ChopperTileEntityRenderer<T extends TileEntity & IChestLid> extends TileEntityRenderer<T> {
-
-	public static final ResourceLocation CHOPPER_TEXTURE = new ResourceLocation(Chopper.MOD_ID, "model/chopper");
-	public static final ResourceLocation LID_TEXTURE = new ResourceLocation(Chopper.MOD_ID, "model/chopper_lid");
 
 	private static final int[] TEX_SIZE = { 64, 64 };
 
@@ -112,13 +107,13 @@ public class ChopperTileEntityRenderer<T extends TileEntity & IChestLid> extends
 			int light = callbackWrapper.<Int2IntFunction>apply(new DualBrightnessCallback<>())
 					.applyAsInt(combinedLightIn);
 
-			RenderMaterial materialGeneral = Atlases.CHEST_MATERIAL;
-			RenderMaterial materialLid = new RenderMaterial(Atlases.CHEST_ATLAS, LID_TEXTURE);
+			RenderMaterial materialBottom = ChopperMaterials.getBottomMaterial(chopperBlock.getVariant());
+			RenderMaterial materialLid = new RenderMaterial(Atlases.CHEST_ATLAS, ChopperMaterials.LID_TEXTURE);
 
-			IVertexBuilder vBuilderGeneral = materialGeneral.getBuffer(bufferIn, RenderType::getEntityCutout);
+			IVertexBuilder vBuilderBottom = materialBottom.getBuffer(bufferIn, RenderType::getEntityCutout);
 			IVertexBuilder vBuilderLid = materialLid.getBuffer(bufferIn, RenderType::getEntityCutout);
 
-			this.handleModelRender(matrixStackIn, vBuilderGeneral, vBuilderLid, this.lidDown, this.lidNorth,
+			this.handleModelRender(matrixStackIn, vBuilderBottom, vBuilderLid, this.lidDown, this.lidNorth,
 					this.lidEast, this.lidSouth, this.lidWest, this.latch, this.bottom, lidAngle, light,
 					combinedOverlayIn);
 
@@ -129,8 +124,8 @@ public class ChopperTileEntityRenderer<T extends TileEntity & IChestLid> extends
 	private BlockState getBlockState(ChopperTileEntity chopperTE, boolean flag) {
 		if (flag)
 			return chopperTE.getBlockState();
-
-		return (BlockState) ChopperRegistry.CHOPPER_BLOCK.get().getDefaultState().with(ChopperBlock.FACING,
+		
+		return (BlockState) ChopperRegistry.CHOPPER_BLOCK_NORMAL.get().getDefaultState().with(ChopperBlock.FACING,
 				Direction.SOUTH);
 	}
 
@@ -151,10 +146,10 @@ public class ChopperTileEntityRenderer<T extends TileEntity & IChestLid> extends
 		return lidAngle;
 	}
 
-	private void handleModelRender(MatrixStack matrixStackIn, IVertexBuilder vBuilderGeneral,
-			IVertexBuilder vBuilderLid, ModelRenderer lidPart0, ModelRenderer lidPart1, ModelRenderer lidPart2,
-			ModelRenderer lidPart3, ModelRenderer lidPart4, ModelRenderer latchModel, ModelRenderer bottomModel,
-			float lidAngle, int lightIn, int overlayIn) {
+	private void handleModelRender(MatrixStack matrixStackIn, IVertexBuilder vBuilderBottom, IVertexBuilder vBuilderLid,
+			ModelRenderer lidPart0, ModelRenderer lidPart1, ModelRenderer lidPart2, ModelRenderer lidPart3,
+			ModelRenderer lidPart4, ModelRenderer latchModel, ModelRenderer bottomModel, float lidAngle, int lightIn,
+			int overlayIn) {
 		lidPart0.rotateAngleX = -(lidAngle * ((float) Math.PI / 2F));
 		lidPart1.rotateAngleX = lidPart0.rotateAngleX;
 		lidPart2.rotateAngleX = lidPart0.rotateAngleX;
@@ -167,7 +162,7 @@ public class ChopperTileEntityRenderer<T extends TileEntity & IChestLid> extends
 		lidPart2.render(matrixStackIn, vBuilderLid, lightIn, overlayIn);
 		lidPart3.render(matrixStackIn, vBuilderLid, lightIn, overlayIn);
 		lidPart4.render(matrixStackIn, vBuilderLid, lightIn, overlayIn);
-		bottomModel.render(matrixStackIn, vBuilderGeneral, lightIn, overlayIn);
-		latchModel.render(matrixStackIn, vBuilderGeneral, lightIn, overlayIn);
+		bottomModel.render(matrixStackIn, vBuilderBottom, lightIn, overlayIn);
+		latchModel.render(matrixStackIn, vBuilderBottom, lightIn, overlayIn);
 	}
 }

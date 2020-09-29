@@ -19,7 +19,7 @@ public class ChopperConfig {
 		public final BooleanValue enableShapelessRecipe;
 		public final BooleanValue enableShapedRecipe;
 
-		public final BooleanValue enableQuarkIntegration;
+//		public final BooleanValue enableQuarkIntegration;
 		public final BooleanValue enableIronChestsIntegration;
 
 		public Common(ForgeConfigSpec.Builder builder) {
@@ -36,10 +36,10 @@ public class ChopperConfig {
 
 			builder.push("integration");
 
-			enableQuarkIntegration = builder
-					.comment(
-							"Adds all wooden chest variants from Quark. If Quark is not installed this wil do nothing.")
-					.define("enableQuarkIntegration", true);
+//			enableQuarkIntegration = builder
+//					.comment(
+//							"Adds all wooden chest variants from Quark. If Quark is not installed this wil do nothing.")
+//					.define("enableQuarkIntegration", true);
 
 			enableIronChestsIntegration = builder.comment(
 					"Adds all chest variants from Iron Chests. If Iron Chests is not installed this will do nothing.")
@@ -56,6 +56,21 @@ public class ChopperConfig {
 		final Pair<Common, ForgeConfigSpec> commonPair = new ForgeConfigSpec.Builder().configure(Common::new);
 		COMMON_SPEC = commonPair.getRight();
 		COMMON = commonPair.getLeft();
+	}
+	
+	public static boolean getValueFromName(String name) {
+		switch(name) {
+		case "enableShapelessRecipe":
+			return COMMON.enableShapelessRecipe.get().booleanValue();
+		case "enableShapedRecipe":
+			return COMMON.enableShapedRecipe.get().booleanValue();
+//		case "enableQuarkIntegration":
+//			return COMMON.enableQuarkIntegration.get().booleanValue();
+		case "enableIronChestsIntegration":
+			return COMMON.enableIronChestsIntegration.get().booleanValue();
+		default:
+			return false;
+		}
 	}
 
 	@SubscribeEvent
