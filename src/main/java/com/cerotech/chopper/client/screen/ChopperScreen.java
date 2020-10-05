@@ -1,9 +1,9 @@
 package com.cerotech.chopper.client.screen;
 
+import com.cerotech.chopper.block.ChopperVariant;
 import com.cerotech.chopper.inventory.ChopperContainer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.progwml6.ironchest.IronChests;
 
 import net.minecraft.client.gui.IHasContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -15,11 +15,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ChopperScreen extends ContainerScreen<ChopperContainer> implements IHasContainer<ChopperContainer> {
 
+	private final ChopperVariant variant;
+
 	public ChopperScreen(ChopperContainer container, PlayerInventory playerInv, ITextComponent title) {
 		super(container, playerInv, title);
 
-		this.xSize = container.getVariant().getXSize();
-		this.ySize = container.getVariant().getYSize();
+		this.variant = container.getVariant();
+		this.xSize = this.variant.getXSize();
+		this.ySize = this.variant.getYSize();
 		this.playerInventoryTitleY = this.ySize - 94;
 		this.passEvents = false;
 	}
@@ -29,19 +32,15 @@ public class ChopperScreen extends ContainerScreen<ChopperContainer> implements 
 			int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-		this.minecraft.getTextureManager().bindTexture(this.container.getVariant().getGuiTexture());
+		this.minecraft.getTextureManager().bindTexture(this.variant.getGuiTexture());
 
 		int x = (this.width - this.xSize) / 2;
 		int y = (this.height - this.ySize) / 2;
-		int textureXSize = this.container.getVariant().getGuiTextureSizeX();
-		int textureYSize = this.container.getVariant().getGuiTextureSizeY();
+
+		int textureXSize = this.variant.getGuiTextureSizeX();
+		int textureYSize = this.variant.getGuiTextureSizeY();
 
 		blit(matrixStack, x, y, 0, 0, this.xSize, this.ySize, textureXSize, textureYSize);
-
-		if (this.container.getVariant().getModID() != IronChests.MODID) {
-			y += this.container.getVariant().getRows() * 18 + 17;
-			blit(matrixStack, x, y, 0, 126, this.xSize, 96);
-		}
 	}
 
 	@Override

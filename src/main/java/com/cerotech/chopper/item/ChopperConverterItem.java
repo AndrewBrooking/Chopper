@@ -1,7 +1,8 @@
 package com.cerotech.chopper.item;
 
-import com.cerotech.chopper.ChopperRegistry;
 import com.cerotech.chopper.block.ChopperBlock;
+import com.cerotech.chopper.block.ChopperVariant;
+import com.cerotech.chopper.registry.BlockRegistry;
 import com.cerotech.chopper.tileentity.ChopperTileEntity;
 
 import net.minecraft.block.Block;
@@ -47,9 +48,9 @@ public class ChopperConverterItem extends Item {
 
 		if (!(block instanceof ChestBlock))
 			return ActionResultType.PASS;
-		
+
 		// TODO: IRON CHESTS UPGRADING
-		
+
 		if (te instanceof ChestTileEntity) {
 
 			if (ChestTileEntity.getPlayersUsing(world, blockPos) > 0) {
@@ -70,14 +71,14 @@ public class ChopperConverterItem extends Item {
 				chestContents.set(slot, chestTE.getStackInSlot(slot));
 			}
 
-			ChopperTileEntity newTE = new ChopperTileEntity();
+			ChopperTileEntity newTE = ChopperTileEntity.createChopperTE(ChopperVariant.NORMAL);
 
 			chestTE.updateContainingBlockInfo();
 
 			world.removeTileEntity(blockPos);
 			world.removeBlock(blockPos, false);
 
-			BlockState newState = ChopperRegistry.CHOPPER_BLOCK_NORMAL.get().getDefaultState().with(ChopperBlock.FACING,
+			BlockState newState = BlockRegistry.CHOPPER_NORMAL.get().getDefaultState().with(ChopperBlock.FACING,
 					facing);
 
 			world.setBlockState(blockPos, newState, 3);

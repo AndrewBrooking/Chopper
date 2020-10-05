@@ -8,7 +8,14 @@
 	"block.chopper.chopper_block_crystal": "Crystal Chopper",
 	"block.chopper.chopper_block_obsidian": "Obsidian Chopper",
 	
-	"chopper.container.chopper": "Chopper",
+	"chopper.container.chopper_normal": "Chopper",
+	"chopper.container.chopper_iron": "Iron Chopper",
+	"chopper.container.chopper_gold": "Gold Chopper",
+	"chopper.container.chopper_diamond": "Diamond Chopper",
+	"chopper.container.chopper_copper": "Copper Chopper",
+	"chopper.container.chopper_silver": "Silver Chopper",
+	"chopper.container.chopper_crystal": "Crystal Chopper",
+	"chopper.container.chopper_obsidian": "Obsidian Chopper",
 	
 	"item.chopper.chopper_converter": "Chopper Converter",
 	

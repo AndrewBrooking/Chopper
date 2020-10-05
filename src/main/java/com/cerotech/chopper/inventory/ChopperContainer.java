@@ -1,7 +1,7 @@
 package com.cerotech.chopper.inventory;
 
-import com.cerotech.chopper.ChopperRegistry;
 import com.cerotech.chopper.block.ChopperVariant;
+import com.cerotech.chopper.registry.ContainerRegistry;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -15,28 +15,83 @@ import net.minecraft.item.ItemStack;
 public class ChopperContainer extends Container {
 
 	private final ChopperVariant variant;
+	private int rows, cols, size;
 
-	private static final int DEFAULT_SIZE = 27;
 	private static final int CELL_SIZE = 18;
 	private static final int PLAYER_ROWS = 3;
 	private static final int PLAYER_COLS = 9;
-	private static final int HOTBAR_OFFSET = 24;
-	private static final int HOTBAR_Y_PADDING = 4;
 
-	public static ChopperContainer createChopperContainer(int id, PlayerInventory playerInventory) {
-		return new ChopperContainer(ChopperRegistry.CHOPPER_CONTAINER.get(), id, new Inventory(DEFAULT_SIZE),
-				playerInventory, ChopperVariant.NORMAL);
+	private static final int PADDING_X = 12;
+	private static final int TOP_PADDING_Y = 18;
+	private static final int BOT_PADDING_Y = 24;
+
+	public static ChopperContainer createChopperContainerNormal(int id, PlayerInventory playerInventory) {
+		return new ChopperContainer(ContainerRegistry.CHOPPER_NORMAL.get(), id,
+				new Inventory(ChopperVariant.NORMAL.getSlotCount()), playerInventory, ChopperVariant.NORMAL);
 	}
 
-	public static ChopperContainer createChopperContainer(int id, IInventory inventory,
-			PlayerInventory playerInventory) {
-		return new ChopperContainer(ChopperRegistry.CHOPPER_CONTAINER.get(), id, inventory, playerInventory,
-				ChopperVariant.NORMAL);
+	public static ChopperContainer createChopperContainerIron(int id, PlayerInventory playerInventory) {
+		return new ChopperContainer(ContainerRegistry.CHOPPER_IRON.get(), id,
+				new Inventory(ChopperVariant.IRON.getSlotCount()), playerInventory, ChopperVariant.IRON);
+	}
+
+	public static ChopperContainer createChopperContainerGold(int id, PlayerInventory playerInventory) {
+		return new ChopperContainer(ContainerRegistry.CHOPPER_GOLD.get(), id,
+				new Inventory(ChopperVariant.GOLD.getSlotCount()), playerInventory, ChopperVariant.GOLD);
+	}
+
+	public static ChopperContainer createChopperContainerDiamond(int id, PlayerInventory playerInventory) {
+		return new ChopperContainer(ContainerRegistry.CHOPPER_DIAMOND.get(), id,
+				new Inventory(ChopperVariant.DIAMOND.getSlotCount()), playerInventory, ChopperVariant.DIAMOND);
+	}
+
+	public static ChopperContainer createChopperContainerCopper(int id, PlayerInventory playerInventory) {
+		return new ChopperContainer(ContainerRegistry.CHOPPER_COPPER.get(), id,
+				new Inventory(ChopperVariant.COPPER.getSlotCount()), playerInventory, ChopperVariant.COPPER);
+	}
+
+	public static ChopperContainer createChopperContainerSilver(int id, PlayerInventory playerInventory) {
+		return new ChopperContainer(ContainerRegistry.CHOPPER_SILVER.get(), id,
+				new Inventory(ChopperVariant.SILVER.getSlotCount()), playerInventory, ChopperVariant.SILVER);
+	}
+
+	public static ChopperContainer createChopperContainerCrystal(int id, PlayerInventory playerInventory) {
+		return new ChopperContainer(ContainerRegistry.CHOPPER_CRYSTAL.get(), id,
+				new Inventory(ChopperVariant.CRYSTAL.getSlotCount()), playerInventory, ChopperVariant.CRYSTAL);
+	}
+
+	public static ChopperContainer createChopperContainerObsidian(int id, PlayerInventory playerInventory) {
+		return new ChopperContainer(ContainerRegistry.CHOPPER_OBSIDIAN.get(), id,
+				new Inventory(ChopperVariant.OBSIDIAN.getSlotCount()), playerInventory, ChopperVariant.OBSIDIAN);
 	}
 
 	public static ChopperContainer createChopperContainer(int id, IInventory inventory, PlayerInventory playerInventory,
 			ChopperVariant variant) {
-		return new ChopperContainer(ChopperRegistry.CHOPPER_CONTAINER.get(), id, inventory, playerInventory, variant);
+
+		switch (variant) {
+		case IRON:
+			return new ChopperContainer(ContainerRegistry.CHOPPER_IRON.get(), id, inventory, playerInventory, variant);
+		case GOLD:
+			return new ChopperContainer(ContainerRegistry.CHOPPER_GOLD.get(), id, inventory, playerInventory, variant);
+		case DIAMOND:
+			return new ChopperContainer(ContainerRegistry.CHOPPER_DIAMOND.get(), id, inventory, playerInventory,
+					variant);
+		case COPPER:
+			return new ChopperContainer(ContainerRegistry.CHOPPER_COPPER.get(), id, inventory, playerInventory,
+					variant);
+		case SILVER:
+			return new ChopperContainer(ContainerRegistry.CHOPPER_SILVER.get(), id, inventory, playerInventory,
+					variant);
+		case CRYSTAL:
+			return new ChopperContainer(ContainerRegistry.CHOPPER_CRYSTAL.get(), id, inventory, playerInventory,
+					variant);
+		case OBSIDIAN:
+			return new ChopperContainer(ContainerRegistry.CHOPPER_OBSIDIAN.get(), id, inventory, playerInventory,
+					variant);
+		default:
+			return new ChopperContainer(ContainerRegistry.CHOPPER_NORMAL.get(), id, inventory, playerInventory,
+					variant);
+		}
 	}
 
 	private final IInventory inventory;
@@ -44,8 +99,14 @@ public class ChopperContainer extends Container {
 	protected ChopperContainer(ContainerType<?> type, int id, IInventory inventory, PlayerInventory playerInventory,
 			ChopperVariant variant) {
 		super(type, id);
+
 		this.inventory = inventory;
 		this.variant = variant;
+		this.rows = this.variant.getRows();
+		this.cols = this.variant.getCols();
+		this.size = this.rows * this.cols;
+
+		assertInventorySize(inventory, this.size);
 
 		inventory.openInventory(playerInventory.player);
 
@@ -73,7 +134,7 @@ public class ChopperContainer extends Container {
 		Slot slot = this.inventorySlots.get(index);
 
 		if (slot != null && slot.getHasStack()) {
-			int totalSlots = this.variant.getRows() * this.variant.getCols();
+			int totalSlots = this.rows * this.cols;
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
 
@@ -96,30 +157,27 @@ public class ChopperContainer extends Container {
 	}
 
 	private void createInventorySlots() {
-		int rows = this.variant.getRows();
-		int cols = this.variant.getCols();
-
-		for (int row = 0; row < rows; ++row) {
-			for (int col = 0; col < cols; ++col) {
-				this.addSlot(new Slot(this.inventory, col + row * cols, this.variant.getXPadding() + col * CELL_SIZE,
-						CELL_SIZE + row * CELL_SIZE));
+		for (int row = 0; row < this.rows; ++row) {
+			for (int col = 0; col < this.cols; ++col) {
+				this.addSlot(new Slot(this.inventory, col + row * this.cols, PADDING_X + col * CELL_SIZE,
+						TOP_PADDING_Y + row * CELL_SIZE));
 			}
 		}
 	}
 
 	private void createPlayerInventorySlots(PlayerInventory playerInventory) {
-		int xPadding = (this.variant.getXSize() - (CELL_SIZE * PLAYER_COLS)) / 2 + 1;
+		int startX = (this.variant.getXSize() - (CELL_SIZE * PLAYER_COLS)) / 2 + 1;
 
 		for (int row = 0; row < PLAYER_ROWS; ++row) {
 			for (int col = 0; col < PLAYER_COLS; ++col) {
-				this.addSlot(new Slot(playerInventory, col + row * 9 + 9, xPadding + col * CELL_SIZE,
-						this.variant.getYSize() - (HOTBAR_OFFSET + HOTBAR_Y_PADDING) - (row * CELL_SIZE)));
+				this.addSlot(new Slot(playerInventory, col + row * 9 + 9, startX + col * CELL_SIZE,
+						this.getVariant().getYSize() - (4 - row) * CELL_SIZE - 10));
 			}
 		}
 
-		for (int h = 0; h < 9; ++h) {
+		for (int h = 0; h < PLAYER_COLS; ++h) {
 			this.addSlot(
-					new Slot(playerInventory, h, xPadding + h * CELL_SIZE, this.variant.getYSize() - HOTBAR_OFFSET));
+					new Slot(playerInventory, h, startX + h * CELL_SIZE, this.getVariant().getYSize() - BOT_PADDING_Y));
 		}
 	}
 

@@ -2,9 +2,10 @@ package com.cerotech.chopper.data;
 
 import java.util.function.Consumer;
 
-import com.cerotech.chopper.Chopper;
-import com.cerotech.chopper.ChopperRegistry;
+import com.cerotech.chopper.CommonValues;
 import com.cerotech.chopper.config.ChopperConfig;
+import com.cerotech.chopper.registry.BlockRegistry;
+import com.cerotech.chopper.registry.ItemRegistry;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
@@ -31,33 +32,27 @@ public class ChopperRecipeProvider extends RecipeProvider {
 	private void addShapedRecipes(Consumer<IFinishedRecipe> consumer) {
 
 		if (ChopperConfig.COMMON.enableShapedRecipe.get()) {
-			ShapedRecipeBuilder.shapedRecipe(ChopperRegistry.CHOPPER_BLOCK_NORMAL.get())
-				.key('I', Tags.Items.INGOTS_IRON)
-				.key('C', Tags.Items.CHESTS_WOODEN)
-				.patternLine("ICI")
-				.patternLine("ICI")
-				.patternLine(" I ")
-				.addCriterion("has_hopper", hasItem(Blocks.HOPPER))
-				.build(consumer, new ResourceLocation(Chopper.MOD_ID, "chopper_shaped"));
+			ShapedRecipeBuilder.shapedRecipe(BlockRegistry.CHOPPER_NORMAL.get()).key('I', Tags.Items.INGOTS_IRON)
+					.key('C', Tags.Items.CHESTS_WOODEN).patternLine("ICI").patternLine("ICI").patternLine(" I ")
+					.addCriterion("has_hopper", hasItem(Blocks.HOPPER))
+					.build(consumer, new ResourceLocation(CommonValues.MOD_ID, "chopper_shaped"));
 		}
 
-		ShapedRecipeBuilder.shapedRecipe(ChopperRegistry.CHOPPER_CONVERTER.get())
-			.key('S', Tags.Items.RODS_WOODEN)
-			.key('H', Ingredient.fromItems(Blocks.HOPPER))
-			.patternLine("SHS")
-			.patternLine("S S")
-			.addCriterion("has_hopper", hasItem(Blocks.HOPPER))
-			.build(consumer, new ResourceLocation(Chopper.MOD_ID, "chopper_converter"));
+		ShapedRecipeBuilder.shapedRecipe(ItemRegistry.CHOPPER_CONVERTER.get()).key('S', Tags.Items.RODS_WOODEN)
+				.key('H', Ingredient.fromItems(Blocks.HOPPER)).patternLine("SHS").patternLine("S S")
+				.addCriterion("has_hopper", hasItem(Blocks.HOPPER))
+				.build(consumer, new ResourceLocation(CommonValues.MOD_ID, "chopper_converter"));
 	}
 
 	private void addShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
 
 		if (ChopperConfig.COMMON.enableShapelessRecipe.get()) {
-			ShapelessRecipeBuilder.shapelessRecipe(ChopperRegistry.CHOPPER_BLOCK_NORMAL.get())
-				.addIngredient(Tags.Items.CHESTS_WOODEN)
-				.addIngredient(Ingredient.fromItems(Blocks.HOPPER))
-				.addCriterion("has_hopper", hasItem(Blocks.HOPPER))
-				.build(consumer, new ResourceLocation(Chopper.MOD_ID, "chopper_shapeless"));
+			ShapelessRecipeBuilder.shapelessRecipe(BlockRegistry.CHOPPER_NORMAL.get())
+					.addIngredient(Tags.Items.CHESTS_WOODEN).addIngredient(Ingredient.fromItems(Blocks.HOPPER))
+					.addCriterion("has_hopper", hasItem(Blocks.HOPPER))
+					.build(consumer, new ResourceLocation(CommonValues.MOD_ID, "chopper_shapeless"));
 		}
 	}
+
+	// TODO: VARIANT RECIPES
 }

@@ -8,8 +8,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.cerotech.chopper.ChopperRegistry;
 import com.cerotech.chopper.block.ChopperBlock;
+import com.cerotech.chopper.registry.BlockRegistry;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -44,10 +44,7 @@ public class LootProvider extends LootTableProvider {
 	}
 
 	protected void addTables() {
-//		lootTables.put(ChopperRegistry.CHOPPER_BLOCK_NORMAL.get(),
-//				createStandardTable("chopper_block", ChopperRegistry.CHOPPER_BLOCK_NORMAL.get()));
-
-		for (RegistryObject<Block> regObj : ChopperRegistry.BLOCKS.getEntries()) {
+		for (RegistryObject<Block> regObj : BlockRegistry.BLOCKS.getEntries()) {
 			Block block = regObj.get();
 
 			if (block != null && block instanceof ChopperBlock) {

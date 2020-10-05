@@ -1,7 +1,7 @@
 package com.cerotech.chopper.client.tileentity;
 
-import com.cerotech.chopper.ChopperRegistry;
 import com.cerotech.chopper.block.ChopperBlock;
+import com.cerotech.chopper.registry.BlockRegistry;
 import com.cerotech.chopper.tileentity.ChopperTileEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -124,8 +124,8 @@ public class ChopperTileEntityRenderer<T extends TileEntity & IChestLid> extends
 	private BlockState getBlockState(ChopperTileEntity chopperTE, boolean flag) {
 		if (flag)
 			return chopperTE.getBlockState();
-		
-		return (BlockState) ChopperRegistry.CHOPPER_BLOCK_NORMAL.get().getDefaultState().with(ChopperBlock.FACING,
+
+		return (BlockState) BlockRegistry.CHOPPER_NORMAL.get().getDefaultState().with(ChopperBlock.FACING,
 				Direction.SOUTH);
 	}
 

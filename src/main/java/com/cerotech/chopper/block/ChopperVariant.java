@@ -2,27 +2,46 @@ package com.cerotech.chopper.block;
 
 import java.util.Locale;
 
+import com.cerotech.chopper.CommonValues;
+import com.progwml6.ironchest.IronChests;
+import com.progwml6.ironchest.client.tileentity.IronChestsModels;
 import com.progwml6.ironchest.common.block.IronChestsTypes;
 
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 
 public enum ChopperVariant implements IStringSerializable {
-	NORMAL("normal", "chopper"),
-	IRON("iron", "ironchest"),
-	GOLD("gold", "ironchest"),
-	DIAMOND("diamond", "ironchest"),
-	COPPER("copper", "ironchest"),
-	SILVER("silver", "ironchest"),
-	CRYSTAL("crystal", "ironchest"),
-	OBSIDIAN("obsidian", "ironchest");
+	NORMAL("normal", CommonValues.MOD_ID),
+	IRON("iron", IronChests.MODID),
+	GOLD("gold", IronChests.MODID),
+	DIAMOND("diamond", IronChests.MODID),
+	COPPER("copper", IronChests.MODID),
+	SILVER("silver", IronChests.MODID),
+	CRYSTAL("crystal", IronChests.MODID),
+	OBSIDIAN("obsidian", IronChests.MODID);
 
-	private final String NAME;
-	private final String MODID;
+	private static final int DEFAULT_ROWS = 3;
+	private static final int DEFAULT_COLS = 9;
+	private static final int DEFAULT_SLOTS = 27;
+
+	private static final int DEFAULT_GUI_SIZE_X = 184;
+	private static final int DEFAULT_GUI_SIZE_Y = 168;
+
+	private static final int DEFAULT_GUI_TEXTURE_X = 256;
+	private static final int DEFAULT_GUI_TEXTURE_Y = 256;
+
+	private static final ResourceLocation DEFAULT_GUI_TEXTURE = new ResourceLocation(CommonValues.MOD_ID,
+			"textures/gui/chopper_gui.png");
+
+	private static final ResourceLocation DEFAULT_BLOCK_TEXTURE = new ResourceLocation(
+			"textures/entity/chest/normal.png");
+
+	private final String name;
+	private final String modid;
 
 	ChopperVariant(String name, String modid) {
-		this.NAME = name;
-		this.MODID = modid;
+		this.name = name;
+		this.modid = modid;
 	}
 
 	public String getID() {
@@ -30,11 +49,11 @@ public enum ChopperVariant implements IStringSerializable {
 	}
 
 	public String getModID() {
-		return this.MODID;
+		return this.modid;
 	}
 
 	public String getName() {
-		return this.NAME;
+		return this.name;
 	}
 
 	@Override
@@ -75,74 +94,74 @@ public enum ChopperVariant implements IStringSerializable {
 	}
 
 	public int getRows() {
-		switch (this.getModID()) {
-		case "ironchest":
+		if (this.getModID() == IronChests.MODID) {
 			return this.toIronChestsType().getRowCount();
-		default:
-			return 3;
 		}
+
+		return DEFAULT_ROWS;
 	}
 
 	public int getCols() {
-		switch (this.getModID()) {
-		case "ironchest":
+		if (this.getModID() == IronChests.MODID) {
 			return this.toIronChestsType().rowLength;
-		default:
-			return 9;
 		}
+
+		return DEFAULT_COLS;
+	}
+
+	public int getSlotCount() {
+		if (this.getModID() == IronChests.MODID) {
+			return this.toIronChestsType().size;
+		}
+
+		return DEFAULT_SLOTS;
 	}
 
 	public int getXSize() {
-		switch (this.getModID()) {
-		case "ironchest":
+		if (this.getModID() == IronChests.MODID) {
 			return this.toIronChestsType().xSize;
-		default:
-			return 176;
 		}
+
+		return DEFAULT_GUI_SIZE_X;
 	}
 
 	public int getYSize() {
-		switch (this.getModID()) {
-		case "ironchest":
+		if (this.getModID() == IronChests.MODID) {
 			return this.toIronChestsType().ySize;
-		default:
-			return 168;
 		}
-	}
 
-	public int getXPadding() {
-		switch (this.getModID()) {
-		case "ironchest":
-			return 12;
-		default:
-			return 8;
-		}
+		return DEFAULT_GUI_SIZE_Y;
 	}
 
 	public ResourceLocation getGuiTexture() {
-		switch (this.getModID()) {
-		case "ironchest":
+		if (this.getModID() == IronChests.MODID) {
 			return this.toIronChestsType().guiTexture;
-		default:
-			return new ResourceLocation("textures/gui/container/generic_54.png");
 		}
+
+		return DEFAULT_GUI_TEXTURE;
 	}
-	
+
 	public int getGuiTextureSizeX() {
-		switch (this.getModID()) {
-		case "ironchest":
+		if (this.getModID() == IronChests.MODID) {
 			return this.toIronChestsType().textureXSize;
-		default:
-			return 256;
 		}
+
+		return DEFAULT_GUI_TEXTURE_X;
 	}
-	
+
 	public int getGuiTextureSizeY() {
-		switch (this.getModID()) {
-		case "ironchest":
+		if (this.getModID() == IronChests.MODID) {
 			return this.toIronChestsType().textureYSize;
-		default:
-			return 168;
 		}
+
+		return DEFAULT_GUI_TEXTURE_Y;
+	}
+
+	public ResourceLocation getBlockTexture() {
+		if (this.getModID() == IronChests.MODID) {
+			return IronChestsModels.chooseChestTexture(this.toIronChestsType());
+		}
+
+		return DEFAULT_BLOCK_TEXTURE;
 	}
 }

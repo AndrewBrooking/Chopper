@@ -7,12 +7,12 @@ import java.util.stream.IntStream;
 
 import javax.annotation.Nullable;
 
-import com.cerotech.chopper.Chopper;
-import com.cerotech.chopper.ChopperRegistry;
+import com.cerotech.chopper.CommonValues;
 import com.cerotech.chopper.block.ChopperBlock;
 import com.cerotech.chopper.block.ChopperVariant;
 import com.cerotech.chopper.inventory.ChopperContainer;
 import com.cerotech.chopper.inventory.ChopperItemHandler;
+import com.cerotech.chopper.registry.TileEntityRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -58,6 +58,58 @@ import net.minecraftforge.items.VanillaInventoryCodeHooks;
 
 public class ChopperTileEntity extends LockableLootTileEntity implements IChestLid, IHopper, ITickableTileEntity {
 
+	public static ChopperTileEntity createChopperTE(ChopperVariant variant) {
+		switch (variant) {
+		case IRON:
+			return createIronTE();
+		case GOLD:
+			return createGoldTE();
+		case DIAMOND:
+			return createDiamondTE();
+		case COPPER:
+			return createCopperTE();
+		case SILVER:
+			return createSilverTE();
+		case CRYSTAL:
+			return createCrystalTE();
+		case OBSIDIAN:
+		default:
+			return createNormalTE();
+		}
+	}
+
+	public static ChopperTileEntity createNormalTE() {
+		return new ChopperTileEntity(TileEntityRegistry.CHOPPER_NORMAL.get(), ChopperVariant.NORMAL);
+	}
+
+	public static ChopperTileEntity createIronTE() {
+		return new ChopperTileEntity(TileEntityRegistry.CHOPPER_IRON.get(), ChopperVariant.IRON);
+	}
+
+	public static ChopperTileEntity createGoldTE() {
+		return new ChopperTileEntity(TileEntityRegistry.CHOPPER_GOLD.get(), ChopperVariant.GOLD);
+	}
+
+	public static ChopperTileEntity createDiamondTE() {
+		return new ChopperTileEntity(TileEntityRegistry.CHOPPER_DIAMOND.get(), ChopperVariant.DIAMOND);
+	}
+
+	public static ChopperTileEntity createCopperTE() {
+		return new ChopperTileEntity(TileEntityRegistry.CHOPPER_COPPER.get(), ChopperVariant.COPPER);
+	}
+
+	public static ChopperTileEntity createSilverTE() {
+		return new ChopperTileEntity(TileEntityRegistry.CHOPPER_SILVER.get(), ChopperVariant.SILVER);
+	}
+
+	public static ChopperTileEntity createCrystalTE() {
+		return new ChopperTileEntity(TileEntityRegistry.CHOPPER_CRYSTAL.get(), ChopperVariant.CRYSTAL);
+	}
+
+	public static ChopperTileEntity createObsidianTE() {
+		return new ChopperTileEntity(TileEntityRegistry.CHOPPER_OBSIDIAN.get(), ChopperVariant.OBSIDIAN);
+	}
+
 	/**
 	 * START VARIABLES
 	 */
@@ -78,17 +130,9 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 	 * START CONSTRUCTORS
 	 */
 
-	protected ChopperTileEntity(TileEntityType<?> typeIn) {
+	protected ChopperTileEntity(TileEntityType<?> typeIn, ChopperVariant variant) {
 		super(typeIn);
-	}
-
-	public ChopperTileEntity(ChopperVariant variant) {
-		this(ChopperRegistry.CHOPPER_TE.get());
 		this.variant = variant;
-	}
-	
-	public ChopperTileEntity() {
-		this(ChopperVariant.NORMAL);
 	}
 
 	/**
@@ -234,7 +278,7 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 		if (iinventory != null) {
 			Direction direction = Direction.DOWN;
 
-			return iinventory.isEmpty() ? false : func_213972_a(iinventory, direction).anyMatch((stack) -> {
+			return iinventory.isEmpty() ? false : getSlotsForFace(iinventory, direction).anyMatch((stack) -> {
 				return pullItemFromSlot(iinventory, stack, direction);
 			});
 		} else {
@@ -439,6 +483,11 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 		return iinventory;
 	}
 
+	private static IntStream getSlotsForFace(IInventory inv, Direction direction) {
+		return inv instanceof ISidedInventory ? IntStream.of(((ISidedInventory) inv).getSlotsForFace(direction))
+				: IntStream.range(0, inv.getSizeInventory());
+	}
+
 	/**
 	 * END SOURCE/DESTINATION FUNCTIONS
 	 * 
@@ -589,7 +638,7 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 
 	@Override
 	protected ITextComponent getDefaultName() {
-		return new TranslationTextComponent(Chopper.MOD_ID + ".container.chopper_" + variant.getName());
+		return new TranslationTextComponent(CommonValues.MOD_ID + ".container.chopper_" + variant.getName());
 	}
 
 	@Override
@@ -693,11 +742,6 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 
 	public long getLastUpdateTime() {
 		return this.tickedGameTime;
-	}
-
-	private static IntStream func_213972_a(IInventory inv, Direction direction) {
-		return inv instanceof ISidedInventory ? IntStream.of(((ISidedInventory) inv).getSlotsForFace(direction))
-				: IntStream.range(0, inv.getSizeInventory());
 	}
 
 	/**

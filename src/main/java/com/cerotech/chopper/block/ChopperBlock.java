@@ -6,6 +6,7 @@ import java.util.function.BiPredicate;
 import javax.annotation.Nullable;
 
 import com.cerotech.chopper.ChopperRegistry;
+import com.cerotech.chopper.registry.TileEntityRegistry;
 import com.cerotech.chopper.tileentity.ChopperTileEntity;
 
 import it.unimi.dsi.fastutil.floats.Float2FloatFunction;
@@ -152,7 +153,7 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 
 	@Override
 	public TileEntity createNewTileEntity(IBlockReader worldIn) {
-		return new ChopperTileEntity(this.getVariant());
+		return ChopperTileEntity.createChopperTE(this.getVariant());
 	}
 
 	@Override
@@ -250,7 +251,9 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 			Hand handIn, BlockRayTraceResult hit) {
 		if (worldIn.isRemote)
 			return ActionResultType.SUCCESS;
-
+		
+		// TODO: ADD IRON CHESTS UPGRADING
+		
 		INamedContainerProvider container = this.getContainer(state, worldIn, pos);
 
 		if (container != null) {
@@ -303,8 +306,10 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 			BlockPos blockPos) {
 
 		BiPredicate<IWorld, BlockPos> biPredicate = (p_226918_0_, p_226918_1_) -> false;
+		
+		// TODO: Determine correct TE to use
 
-		return TileEntityMerger.func_226924_a_(ChopperRegistry.CHOPPER_TE.get(), ChopperBlock::getMergerType,
+		return TileEntityMerger.func_226924_a_(TileEntityRegistry.CHOPPER_TE.get(), ChopperBlock::getMergerType,
 				ChopperBlock::getDirectionToAttached, FACING, blockState, world, blockPos, biPredicate);
 	}
 
