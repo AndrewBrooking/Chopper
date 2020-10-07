@@ -50,7 +50,7 @@ public class Chopper {
 		ContainerRegistry.registerScreenManagers();
 
 		// Register TE renderers
-//		ClientRegistry.bindTileEntityRenderer(ChopperRegistry.CHOPPER_TE.get(), ChopperTileEntityRenderer::new);
+		TileEntityRegistry.bindRenderers();
 	}
 
 	private void onStitch(TextureStitchEvent.Pre event) {

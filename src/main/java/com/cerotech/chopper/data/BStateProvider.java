@@ -6,6 +6,7 @@ import com.cerotech.chopper.registry.BlockRegistry;
 
 import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
@@ -36,7 +37,7 @@ public class BStateProvider extends BlockStateProvider {
 				ItemModelBuilder itemBuilder = itemModels().getBuilder("item/" + name);
 
 				// TODO: FIX
-//				blockBuilder.texture("particle", chopperBlock.getVariant().getBlockTexture());
+				blockBuilder.texture("particle", new ResourceLocation("textures/entity/chest/normal"));
 
 				itemBuilder.transforms().transform(Perspective.GUI).rotation(30, 45, 0).translation(0, 0, 0)
 						.scale(0.625F);

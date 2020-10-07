@@ -5,7 +5,6 @@ import java.util.function.BiPredicate;
 
 import javax.annotation.Nullable;
 
-import com.cerotech.chopper.ChopperRegistry;
 import com.cerotech.chopper.registry.TileEntityRegistry;
 import com.cerotech.chopper.tileentity.ChopperTileEntity;
 
@@ -37,6 +36,7 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityMerger;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -251,9 +251,9 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 			Hand handIn, BlockRayTraceResult hit) {
 		if (worldIn.isRemote)
 			return ActionResultType.SUCCESS;
-		
+
 		// TODO: ADD IRON CHESTS UPGRADING
-		
+
 		INamedContainerProvider container = this.getContainer(state, worldIn, pos);
 
 		if (container != null) {
@@ -306,10 +306,37 @@ public class ChopperBlock extends ContainerBlock implements IWaterLoggable {
 			BlockPos blockPos) {
 
 		BiPredicate<IWorld, BlockPos> biPredicate = (p_226918_0_, p_226918_1_) -> false;
-		
-		// TODO: Determine correct TE to use
 
-		return TileEntityMerger.func_226924_a_(TileEntityRegistry.CHOPPER_TE.get(), ChopperBlock::getMergerType,
+		ChopperVariant variant = ((ChopperBlock) blockState.getBlock()).getVariant();
+		TileEntityType<ChopperTileEntity> teType;
+
+		switch (variant) {
+		case IRON:
+			teType = TileEntityRegistry.CHOPPER_IRON.get();
+			break;
+		case GOLD:
+			teType = TileEntityRegistry.CHOPPER_GOLD.get();
+			break;
+		case DIAMOND:
+			teType = TileEntityRegistry.CHOPPER_DIAMOND.get();
+			break;
+		case COPPER:
+			teType = TileEntityRegistry.CHOPPER_COPPER.get();
+			break;
+		case SILVER:
+			teType = TileEntityRegistry.CHOPPER_SILVER.get();
+			break;
+		case CRYSTAL:
+			teType = TileEntityRegistry.CHOPPER_CRYSTAL.get();
+			break;
+		case OBSIDIAN:
+			teType = TileEntityRegistry.CHOPPER_OBSIDIAN.get();
+			break;
+		default:
+			teType = TileEntityRegistry.CHOPPER_NORMAL.get();
+		}
+
+		return TileEntityMerger.func_226924_a_(teType, ChopperBlock::getMergerType,
 				ChopperBlock::getDirectionToAttached, FACING, blockState, world, blockPos, biPredicate);
 	}
 

@@ -115,7 +115,7 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 	 */
 
 	private ChopperVariant variant;
-	private NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+	private NonNullList<ItemStack> inventory;
 	private int transferCooldown = -1;
 	private long tickedGameTime;
 	private int ticksSinceSync;
@@ -133,6 +133,7 @@ public class ChopperTileEntity extends LockableLootTileEntity implements IChestL
 	protected ChopperTileEntity(TileEntityType<?> typeIn, ChopperVariant variant) {
 		super(typeIn);
 		this.variant = variant;
+		this.inventory = NonNullList.withSize(variant.getSlotCount(), ItemStack.EMPTY);
 	}
 
 	/**

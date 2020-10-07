@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 public class ChopperContainer extends Container {
 
 	private final ChopperVariant variant;
-	private int rows, cols, size;
+	private int rows, cols;
 
 	private static final int CELL_SIZE = 18;
 	private static final int PLAYER_ROWS = 3;
@@ -68,30 +68,28 @@ public class ChopperContainer extends Container {
 	public static ChopperContainer createChopperContainer(int id, IInventory inventory, PlayerInventory playerInventory,
 			ChopperVariant variant) {
 
+		ContainerType<ChopperContainer> containerType;
+
 		switch (variant) {
 		case IRON:
-			return new ChopperContainer(ContainerRegistry.CHOPPER_IRON.get(), id, inventory, playerInventory, variant);
+			containerType = ContainerRegistry.CHOPPER_IRON.get();
 		case GOLD:
-			return new ChopperContainer(ContainerRegistry.CHOPPER_GOLD.get(), id, inventory, playerInventory, variant);
+			containerType = ContainerRegistry.CHOPPER_GOLD.get();
 		case DIAMOND:
-			return new ChopperContainer(ContainerRegistry.CHOPPER_DIAMOND.get(), id, inventory, playerInventory,
-					variant);
+			containerType = ContainerRegistry.CHOPPER_DIAMOND.get();
 		case COPPER:
-			return new ChopperContainer(ContainerRegistry.CHOPPER_COPPER.get(), id, inventory, playerInventory,
-					variant);
+			containerType = ContainerRegistry.CHOPPER_COPPER.get();
 		case SILVER:
-			return new ChopperContainer(ContainerRegistry.CHOPPER_SILVER.get(), id, inventory, playerInventory,
-					variant);
+			containerType = ContainerRegistry.CHOPPER_SILVER.get();
 		case CRYSTAL:
-			return new ChopperContainer(ContainerRegistry.CHOPPER_CRYSTAL.get(), id, inventory, playerInventory,
-					variant);
+			containerType = ContainerRegistry.CHOPPER_CRYSTAL.get();
 		case OBSIDIAN:
-			return new ChopperContainer(ContainerRegistry.CHOPPER_OBSIDIAN.get(), id, inventory, playerInventory,
-					variant);
+			containerType = ContainerRegistry.CHOPPER_OBSIDIAN.get();
 		default:
-			return new ChopperContainer(ContainerRegistry.CHOPPER_NORMAL.get(), id, inventory, playerInventory,
-					variant);
+			containerType = ContainerRegistry.CHOPPER_NORMAL.get();
 		}
+
+		return new ChopperContainer(containerType, id, inventory, playerInventory, variant);
 	}
 
 	private final IInventory inventory;
@@ -100,13 +98,12 @@ public class ChopperContainer extends Container {
 			ChopperVariant variant) {
 		super(type, id);
 
+		assertInventorySize(inventory, variant.getSlotCount());
+
 		this.inventory = inventory;
 		this.variant = variant;
-		this.rows = this.variant.getRows();
-		this.cols = this.variant.getCols();
-		this.size = this.rows * this.cols;
-
-		assertInventorySize(inventory, this.size);
+		this.rows = variant.getRows();
+		this.cols = variant.getCols();
 
 		inventory.openInventory(playerInventory.player);
 
